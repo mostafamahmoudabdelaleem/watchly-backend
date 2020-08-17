@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Watchly - Movie, Online Movies, Series, Movie</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="ufCPA4uYMFbXTc5H_tSqkzRto_lZ2SBJXXp_8JZP48Y" />
+    <meta name="description"
+        content="Watchly - Online Movies, Series and Shows Enjoy, Entertain and Chill with the newest online movies, series and shows in the world." />
+    <meta name="author" content="Watchly" />
+    <meta property="og:url" content="https://watchly-api.herokuapp.com/" />
+    <meta property="og:site_name" content="Watchly" />
+    <meta property="og:title" content="Watchly - Movie, Online Movies, Series, Movie" />
+    <meta property="og:description"
+        content="Watchly - Online Movies, Series and Shows Enjoy, Entertain and Chill with the newest online movies, series and shows in the world." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="{{ url_for('static', filename='img/favicon1.png') }}" />
+    <meta property="og:locale" content="en_EG" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Watchly - Movie, Online Movies, Series, Movie" />
+    <meta name="twitter:description"
+        content="Watchly - Online Movies, Series and Shows Enjoy, Entertain and Chill with the newest online movies, series and shows in the world." />
+    <meta name="twitter:image" content="{{ url_for('static', filename='img/favicon1.png') }}" />
+    <meta name="twitter:image:alt" content="Watchly" />
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/watchly-style.css') }}" rel="stylesheet">
+</head>
+
+<body style="font-family: 'Roboto', cursive;">
+
+    <!-- jumbotron section -->
+    <div class="jumbotron intro" id="myPage">
+        <div class="container text-center" style="font-family: 'Pacifico', cursive;">
+            <h1>Watchly<span class="fas fa-play logo"></span></h1>
+            <p>Enjoy, Entertain and Chill with the newest online movies,</p>
+            <p>series and shows in the world.</p>
+            <p>To enjoy with our services make sure to login to your account, if you not a user consider to create your
+                account.</p>
+            <br />
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4 text-center">
+                    <a href="/download" class="btn btn-lg btn-orange">
+                        <span class="fab fa-android"></span>
+                        Download APK
+                    </a>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </div>
+    <!--========================================================-->
+    <!--Footer section -->
+    <footer action="search.php" method="GET" class="container-fluid text-center">
+        <br />
+        <p><strong>Copyright © 2018 Watchly - All Rights Reserved.</strong></p>
+        <br />
+    </footer>
+</body>
+
+</html>
