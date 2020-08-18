@@ -20,7 +20,7 @@ def update_function(url, filename):
     with open(filename, 'w', encoding='utf-8') as outfile:
         json.dump(data, outfile, ensure_ascii=False)
     del(data)
-    return true
+    return True
 
 
 def thread_target(update_interval):
