@@ -27,7 +27,7 @@ def thread_target(update_interval):
     print('[{0}]: has started successfully.'.format(UPDATE_THREAD_NAME))
     condition = False
 
-    while(true):
+    while(True):
         condition = update_function(MOVIES_URL, MOVIES_FILENAME)
         if(condition):
             print('[{0}]: Movies list updated successfully.'.format(UPDATE_THREAD_NAME))
