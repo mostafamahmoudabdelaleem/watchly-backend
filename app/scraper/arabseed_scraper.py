@@ -1,0 +1,171 @@
+'''
+Implementaion of Arabseed scraper here 
+
+don't change this function name of first parameter
+keyword is word to scrape data about it.
+you can add more params as you wish but specify their default values
+'''
+
+import os
+import re
+import time
+import requests
+import threading
+from bs4 import BeautifulSoup
+from cachetools import cached, TTLCache
+
+ARABSEED_BASE_URL = 'https://m2.arabseed.net'
+FORIGN_MOVIES_CATEGORY = 'category/foreign-movies-2'
+FORIGN_SERIES_CATEGORY = 'category/foreign-series'
+
+HOME_PAGE_SINGLE_ITEM_CLASS = 'BlockItem ISMovie'
+
+MOVIE_POSTER_CLASS = 'Poster'
+MOVIE_PLOT_CLASS = 'plotArea'
+MOVIE_TITLE_CLASS = 'TitleArea'
+MOVIE_TAX_CLASS = 'taxList'
+
+MOVIE_DOWNLOAD_ITEMS_CLASS = 'download-a'
+
+
+
+def scrape_main_page(url):
+    data = []
+    html = requests.get(url)
+    soup = BeautifulSoup(html.text, 'lxml')
+    movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
+
+    for div in movies_divs:
+        movie = {}
+        movie['link'] = div.find('a')['href']
+        movie['name'] = div.find('a')['title']
+        rating_em = div.find('em')
+        if rating_em == None:
+            movie['rating'] = ''
+        else:
+            movie['rating'] = rating_em.string
+        
+        data.append(movie)
+    
+    return data
+
+
+def get_movie_img(soup):
+    img_div = soup.find('div', {'class': MOVIE_POSTER_CLASS})
+    img_tag = img_div.find('img')
+    return img_tag['src']
+
+def get_movie_plot(soup):
+    plot_div = soup.find('div', {'class': MOVIE_PLOT_CLASS})
+    plot_tag = plot_div.find('p')
+    return plot_tag.string
+
+def get_movie_taxs(soup):
+    tax_div = soup.find('div', {'class': MOVIE_TAX_CLASS})
+    taxs = tax_div.find_all('li')
+
+    quality = ''
+    year = ''
+    duration = ''
+    for tax in taxs:
+        if tax.find('span').string == 'الجودة : ':
+            quality = (tax.find('a').string)
+        if tax.find('span').string == 'تاريخ الاصدار : ':
+            year = (tax.find('a').string)
+        if tax.find('span').string == 'مدة العرض : ':
+            duration = (tax.find('a').string)
+    return {
+        'quality': quality,
+        'year': year,
+        'duration': duration
+    }
+
+def get_movie_sources(link):
+    data = {}
+    url = link + 'download/'
+    html = requests.get(url)
+    soup = BeautifulSoup(html.text, 'lxml')
+    a_tags = soup.find_all('a', {'class': MOVIE_DOWNLOAD_ITEMS_CLASS})
+    for tag in a_tags:
+        tag_name = tag.find('span').string
+        if tag_name == 'Arabseed مباشر' or tag_name == 'Arabseed':
+            data[tag.find('p').string] = tag['href']
+            
+    return data
+
+
+def scrape_movie(url):
+    data = {}
+    html = requests.get(url)
+    soup = BeautifulSoup(html.text, 'lxml')
+    
+    tax = get_movie_taxs(soup)
+    sources = get_movie_sources(url)
+    data['img_link'] = get_movie_img(soup)
+    data['plot'] = get_movie_plot(soup)
+    data['quality'] = tax['quality']
+    data['year'] = tax['year']
+    data['duration'] = tax['duration']
+    data['sources_links'] = sources
+
+    return data
+
+
+def merge_dict(old, new):
+    return {
+        "link": old['link'],
+        "rating": old['rating'],
+        'name': old['name'],
+        'img_link': new['img_link'],
+        'plot': new['plot'],
+        'quality': new['quality'],
+        'year': new['year'],
+        'duration': new['duration'],
+        'sources_links': new['sources_links']
+    }
+
+
+def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
+    global_movies = []
+    movies_data = []
+
+    for i in range(start, end):
+        page_url = "{0}/{1}/?page={2}".format(ARABSEED_BASE_URL, category, (i))
+        movies_data += scrape_main_page(page_url)
+        print(page_url)
+
+    parts = partition(movies_data, 10)
+    start_threads_job(parts, scrape_thread_callback, global_movies)
+    
+
+    return global_movies
+
+
+def partition(arr, num_threads = 4):
+    parts = []
+    r = len(arr) / num_threads # r represent ratio between part size for each thread
+    for i in range(num_threads):
+        st = int(i*r)
+        ed = int((i+1)*r)
+        part = arr[st:ed]
+        parts.append(part)
+    return parts
+
+def start_threads_job(threads_part_array, callback, global_result_array):
+    threads = []
+    c=1
+    for part in threads_part_array:
+        part_id = "id_{0}".format(c)
+        thread = threading.Thread(target=callback, args=(part, global_result_array), name=part_id)
+        thread.start()
+        threads.append(thread)
+        c += 1
+    
+    for thread in threads:
+        thread.join()
+
+def scrape_thread_callback(parts_array, global_array):
+    for data in parts_array:
+        movie = scrape_movie(data['link'])
+        global_array.append(merge_dict(data, movie))
+
