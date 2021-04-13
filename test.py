@@ -35,18 +35,29 @@ movies = []
 start_time = time.time()
 
 #start_threads_job_2(1, 10, 5, scrape_thread_callback_2, movies)
-movies = collect(end=3, category=FORIGN_SERIES_CATEGORY)
+movies = collect(category=FORIGN_MOVIES_CATEGORY)
 
 total_time = round(time.time() - start_time, 3)
 print("[ArabseedScraper]: Scraped <{0}> items in <{1}> second.".format(len(movies),total_time))
 
+with open('ramdan2021.json', 'w', encoding='utf-8') as outfile:
+    json.dump(movies, outfile, indent=4, ensure_ascii=False)
+'''
+#j = json.dumps(movies, separators=(',', ':'), ensure_ascii=False)
+#print(sys.getsizeof(j.encode('utf-8')))
 
-j = json.dumps(movies, separators=(',', ':'), ensure_ascii=False)
-print(sys.getsizeof(j.encode('utf-8')))
+#series = collect(end=101, category=FORIGN_SERIES_CATEGORY)
+
+total_time = round(time.time() - start_time, 3)
+print("[ArabseedScraper]: Scraped <{0}> items in <{1}> second.".format(len(series),total_time))
+
+with open('all_series.json', 'w', encoding='utf-8') as outfile:
+    json.dump(series, outfile, indent=4, ensure_ascii=False)'''
 
 
 
-headers = {
+
+'''headers = {
     'Content-Type': 'application/json; charset=utf-8'
 }
 resp = requests.post(
@@ -54,4 +65,4 @@ resp = requests.post(
     data=j.encode('utf-8'), 
     headers=headers
 )
-print(resp.status_code)
+print(resp.status_code)'''

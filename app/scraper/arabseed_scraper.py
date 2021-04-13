@@ -14,18 +14,18 @@ import threading
 from bs4 import BeautifulSoup
 from cachetools import cached, TTLCache
 
-ARABSEED_BASE_URL = 'https://m2.arabseed.net'
-FORIGN_MOVIES_CATEGORY = 'category/foreign-movies-2'
+ARABSEED_BASE_URL = 'https://arabseed.onl'
+FORIGN_MOVIES_CATEGORY = 'category/مسلسلات-رمضان-2021'
 FORIGN_SERIES_CATEGORY = 'category/foreign-series'
 
-HOME_PAGE_SINGLE_ITEM_CLASS = 'BlockItem ISMovie'
+HOME_PAGE_SINGLE_ITEM_CLASS = 'MovieBlock'
 
 MOVIE_POSTER_CLASS = 'Poster'
-MOVIE_PLOT_CLASS = 'plotArea'
+MOVIE_PLOT_CLASS = 'StoryLine'
 MOVIE_TITLE_CLASS = 'TitleArea'
-MOVIE_TAX_CLASS = 'taxList'
+MOVIE_TAX_CLASS = 'MetaTermsInfo'
 
-MOVIE_DOWNLOAD_ITEMS_CLASS = 'download-a'
+MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 
 
 
@@ -34,16 +34,17 @@ def scrape_main_page(url):
     html = requests.get(url)
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
+    print(len(movies_divs))
 
     for div in movies_divs:
         movie = {}
         movie['link'] = div.find('a')['href']
-        movie['name'] = div.find('a')['title']
-        rating_em = div.find('em')
+        movie['name'] = div.find('a').find('div', {'class': 'BlockName'}).find('h4').string
+        rating_em = div.find('div', {'class': 'number'})
         if rating_em == None:
             movie['rating'] = ''
         else:
-            movie['rating'] = rating_em.string
+            movie['rating'] = rating_em.find('span').text
         
         data.append(movie)
     
@@ -53,7 +54,7 @@ def scrape_main_page(url):
 def get_movie_img(soup):
     img_div = soup.find('div', {'class': MOVIE_POSTER_CLASS})
     img_tag = img_div.find('img')
-    return img_tag['src']
+    return img_tag['data-image']
 
 def get_movie_plot(soup):
     plot_div = soup.find('div', {'class': MOVIE_PLOT_CLASS})
@@ -85,11 +86,12 @@ def get_movie_sources(link):
     url = link + 'download/'
     html = requests.get(url)
     soup = BeautifulSoup(html.text, 'lxml')
+
     a_tags = soup.find_all('a', {'class': MOVIE_DOWNLOAD_ITEMS_CLASS})
     for tag in a_tags:
         tag_name = tag.find('span').string
-        if tag_name == 'Arabseed مباشر' or tag_name == 'Arabseed':
-            data[tag.find('p').string] = tag['href']
+        #if tag_name == 'Arabseed مباشر' or tag_name == 'Arabseed':
+        data[tag.find('p').string] = tag['href']
             
     return data
 
@@ -101,10 +103,11 @@ def scrape_movie(url):
     
     tax = get_movie_taxs(soup)
     sources = get_movie_sources(url)
+
     data['img_link'] = get_movie_img(soup)
     data['plot'] = get_movie_plot(soup)
     data['quality'] = tax['quality']
-    data['year'] = tax['year']
+    data['year'] = '2021' #tax['year']
     data['duration'] = tax['duration']
     data['sources_links'] = sources
 
@@ -134,10 +137,9 @@ def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
         movies_data += scrape_main_page(page_url)
         print(page_url)
 
-    parts = partition(movies_data, 10)
+    parts = partition(movies_data)
     start_threads_job(parts, scrape_thread_callback, global_movies)
     
-
     return global_movies
 
 
