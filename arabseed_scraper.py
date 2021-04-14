@@ -30,7 +30,6 @@ MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 def get_headers(url): 
     return {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
-        "Referer": "{}".format(url),
         'Accept-Encoding': 'gzip, deflate', 
         'Accept': '*/*', 
         'Connection': 'keep-alive'
@@ -39,8 +38,8 @@ def get_headers(url):
 
 def scrape_main_page(url):
     data = []
-    html = requests.get(url)
-    print(html.request.headers)
+    html = requests.get(url, headers=get_headers(url))
+    #print(html.request.headers)
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
     print('[ArabseedScraper]: Found <{}> item in url <{}>'.format(len(movies_divs), url))
@@ -151,7 +150,6 @@ def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
     start_threads_job(parts, scrape_thread_callback, global_movies)
     
     return global_movies
-
 
 def partition(arr, num_threads = 4):
     parts = []
