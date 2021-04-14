@@ -12,7 +12,6 @@ import time
 import requests
 import threading
 from bs4 import BeautifulSoup
-from cachetools import cached, TTLCache
 import hashlib
 
 ARABSEED_BASE_URL = 'https://arabseed.onl'
