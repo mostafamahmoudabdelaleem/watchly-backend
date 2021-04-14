@@ -1,4 +1,4 @@
-from app.scraper.arabseed_scraper import *
+from arabseed_scraper import *
 import json
 import time
 import requests
