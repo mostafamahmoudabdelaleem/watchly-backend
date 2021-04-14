@@ -1,4 +1,4 @@
-from arabseed_scraper import collect
+from arabseed_scraper import collect, FORIGN_MOVIES_CATEGORY
 import json
 import time
 import requests
