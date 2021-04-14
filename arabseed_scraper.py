@@ -35,7 +35,7 @@ HEADERS = {
 def scrape_main_page(url):
     data = []
     html = requests.get(url, headers=HEADERS)
-    print(html.text)
+    print(html)
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
     print('[ArabseedScraper]: Found <{}> item in url <{}>'.format(len(movies_divs), url))
