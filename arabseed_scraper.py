@@ -32,7 +32,7 @@ MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 def scrape_main_page(url):
     data = []
     html = requests.get(url)
-    print(html)
+    print(html.text)
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
     print('[ArabseedScraper]: Found <{}> item in url <{}>'.format(len(movies_divs), url))
