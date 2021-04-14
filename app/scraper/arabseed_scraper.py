@@ -13,6 +13,7 @@ import requests
 import threading
 from bs4 import BeautifulSoup
 from cachetools import cached, TTLCache
+import hashlib
 
 ARABSEED_BASE_URL = 'https://arabseed.onl'
 FORIGN_MOVIES_CATEGORY = 'category/مسلسلات-رمضان-2021'
@@ -38,7 +39,9 @@ def scrape_main_page(url):
 
     for div in movies_divs:
         movie = {}
-        movie['link'] = div.find('a')['href']
+        m_link = div.find('a')['href']
+        movie['id'] = hashlib.sha256("{0}".format(m_link).encode('utf-8')).hexdigest()
+        movie['link'] = m_link
         movie['name'] = div.find('a').find('div', {'class': 'BlockName'}).find('h4').string
         rating_em = div.find('div', {'class': 'number'})
         if rating_em == None:
@@ -116,6 +119,7 @@ def scrape_movie(url):
 
 def merge_dict(old, new):
     return {
+        "id": old['id'],
         "link": old['link'],
         "rating": old['rating'],
         'name': old['name'],
@@ -137,7 +141,8 @@ def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
         movies_data += scrape_main_page(page_url)
         print(page_url)
 
-    parts = partition(movies_data)
+    #parts = partition(movies_data)
+    parts = [movies_data]
     start_threads_job(parts, scrape_thread_callback, global_movies)
     
     return global_movies
@@ -156,6 +161,7 @@ def partition(arr, num_threads = 4):
 def start_threads_job(threads_part_array, callback, global_result_array):
     threads = []
     c=1
+    print('Collectin Threads Num => {0}'.format(len(threads_part_array)))
     for part in threads_part_array:
         part_id = "id_{0}".format(c)
         thread = threading.Thread(target=callback, args=(part, global_result_array), name=part_id)
