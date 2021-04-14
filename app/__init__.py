@@ -3,7 +3,7 @@ from flask import Flask
 #from app.utils.update_thread import start_update_thread
 
 app = Flask(__name__)
-CORS(app)
+#CORS(app)
 #start_update_thread()
 
 from app import views
