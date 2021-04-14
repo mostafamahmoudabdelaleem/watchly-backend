@@ -27,11 +27,14 @@ MOVIE_TAX_CLASS = 'MetaTermsInfo'
 
 MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+}
 
 
 def scrape_main_page(url):
     data = []
-    html = requests.get(url)
+    html = requests.get(url, headers=HEADERS)
     print(html.text)
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
@@ -87,7 +90,7 @@ def get_movie_taxs(soup):
 def get_movie_sources(link):
     data = {}
     url = link + 'download/'
-    html = requests.get(url)
+    html = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(html.text, 'lxml')
 
     a_tags = soup.find_all('a', {'class': MOVIE_DOWNLOAD_ITEMS_CLASS})
@@ -100,7 +103,7 @@ def get_movie_sources(link):
 
 def scrape_movie(url):
     data = {}
-    html = requests.get(url)
+    html = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(html.text, 'lxml')
     
     tax = get_movie_taxs(soup)
