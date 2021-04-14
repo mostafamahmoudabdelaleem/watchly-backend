@@ -32,9 +32,10 @@ MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 def scrape_main_page(url):
     data = []
     html = requests.get(url)
+    print(html)
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
-    print(len(movies_divs))
+    print('[ArabseedScraper]: Found <{}> item in url <{}>'.format(len(movies_divs), url))
 
     for div in movies_divs:
         movie = {}
@@ -97,7 +98,6 @@ def get_movie_sources(link):
             
     return data
 
-
 def scrape_movie(url):
     data = {}
     html = requests.get(url)
@@ -115,7 +115,6 @@ def scrape_movie(url):
 
     return data
 
-
 def merge_dict(old, new):
     return {
         "id": old['id'],
@@ -129,7 +128,6 @@ def merge_dict(old, new):
         'duration': new['duration'],
         'sources_links': new['sources_links']
     }
-
 
 def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
     global_movies = []

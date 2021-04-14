@@ -1,4 +1,4 @@
-from arabseed_scraper import *
+from arabseed_scraper import collect
 import json
 import time
 import requests
