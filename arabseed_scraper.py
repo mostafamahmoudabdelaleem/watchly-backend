@@ -143,7 +143,7 @@ def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
     for i in range(start, end):
         page_url = "{0}/{1}/?page={2}".format(ARABSEED_BASE_URL, category, (i))
         movies_data += scrape_main_page(page_url)
-        print(page_url)
+        #print(page_url)
 
     #parts = partition(movies_data)
     parts = [movies_data]
@@ -164,7 +164,7 @@ def partition(arr, num_threads = 4):
 def start_threads_job(threads_part_array, callback, global_result_array):
     threads = []
     c=1
-    print('Collectin Threads Num => {0}'.format(len(threads_part_array)))
+    #print('Collectin Threads Num => {0}'.format(len(threads_part_array)))
     for part in threads_part_array:
         part_id = "id_{0}".format(c)
         thread = threading.Thread(target=callback, args=(part, global_result_array), name=part_id)
