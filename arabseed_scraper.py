@@ -43,7 +43,7 @@ def get_headers(url):
         'User-Agent': AGENT,
         'Accept-Encoding': 'gzip, deflate', 
         'Accept': '*/*', 
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
         'Referer': '{}'.format(url)
     }
 
