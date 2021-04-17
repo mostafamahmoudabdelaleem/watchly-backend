@@ -38,8 +38,9 @@ def get_headers(url):
 
 def scrape_main_page(url):
     data = []
-    html = requests.get(url, headers=get_headers(url))
-    #print(html.request.headers)
+    html = requests.get(url)
+    if (html.status_code != 200)
+        print(print('[ArabseedScraper]: Request for <{}> returned {}'.format(url, html.request)))
     soup = BeautifulSoup(html.text, 'lxml')
     movies_divs = soup.find_all('div', {'class': HOME_PAGE_SINGLE_ITEM_CLASS})
     print('[ArabseedScraper]: Found <{}> item in url <{}>'.format(len(movies_divs), url))
@@ -94,7 +95,9 @@ def get_movie_taxs(soup):
 def get_movie_sources(link):
     data = {}
     url = link + 'download/'
-    html = requests.get(url, headers=get_headers(url))
+    html = requests.get(url)
+    if (html.status_code != 200)
+        print(print('[ArabseedScraper]: Request for <{}> returned {}'.format(url, html.request)))
     soup = BeautifulSoup(html.text, 'lxml')
 
     a_tags = soup.find_all('a', {'class': MOVIE_DOWNLOAD_ITEMS_CLASS})
@@ -107,7 +110,9 @@ def get_movie_sources(link):
 
 def scrape_movie(url):
     data = {}
-    html = requests.get(url, headers=get_headers(url))
+    html = requests.get(url)
+    if (html.status_code != 200)
+        print(print('[ArabseedScraper]: Request for <{}> returned {}'.format(url, html.request)))
     soup = BeautifulSoup(html.text, 'lxml')
     
     tax = get_movie_taxs(soup)
