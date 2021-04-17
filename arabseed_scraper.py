@@ -13,6 +13,8 @@ import requests
 import threading
 from bs4 import BeautifulSoup
 import hashlib
+from user_agents import get_user_agent
+
 
 ARABSEED_BASE_URL = 'https://arabseed.onl'
 FORIGN_MOVIES_CATEGORY = 'category/مسلسلات-رمضان-2021'
@@ -27,19 +29,28 @@ MOVIE_TAX_CLASS = 'MetaTermsInfo'
 
 MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 
+Refresh_Agent = False
+AGENT = get_user_agent()
+print('[ArabseedScraper]: Scraping using user_agent <{}>'.format(AGENT))
+
 def get_headers(url): 
+    if(Refresh_Agent):
+        AGENT = get_user_agent()
+        Refresh_Agent = False
+        print('[ArabseedScraper]: Refreshing user_agent to <{}>'.format(AGENT))
+    
     return {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
+        'User-Agent': AGENT,
         'Accept-Encoding': 'gzip, deflate', 
         'Accept': '*/*', 
         'Connection': 'keep-alive'
-        ''
+        'Referer': '{}'.format(url)
     }
 
 
 def scrape_main_page(url):
     data = []
-    html = requests.get(url)
+    html = requests.get(url, headers=get_headers(url))
     if (html.status_code != 200):
         print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code))
     soup = BeautifulSoup(html.text, 'lxml')
@@ -96,7 +107,7 @@ def get_movie_taxs(soup):
 def get_movie_sources(link):
     data = {}
     url = link + 'download/'
-    html = requests.get(url)
+    html = requests.get(url, headers=get_headers(url))
     if (html.status_code != 200):
         print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code))
     soup = BeautifulSoup(html.text, 'lxml')
@@ -111,7 +122,7 @@ def get_movie_sources(link):
 
 def scrape_movie(url):
     data = {}
-    html = requests.get(url)
+    html = requests.get(url, headers=get_headers(url))
     if (html.status_code != 200):
         print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code))
     soup = BeautifulSoup(html.text, 'lxml')
@@ -154,6 +165,8 @@ def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
     #parts = partition(movies_data)
     parts = [movies_data]
     start_threads_job(parts, scrape_thread_callback, global_movies)
+
+    Refresh_Agent = True
     
     return global_movies
 
