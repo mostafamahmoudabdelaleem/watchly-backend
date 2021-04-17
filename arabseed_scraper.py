@@ -38,7 +38,7 @@ def get_headers(url):
         'Accept-Encoding': 'gzip, deflate', 
         'Accept': '*/*', 
         'Connection': 'keep-alive',
-        'Referer': '{}'.format(url)
+        'Referer': '{}'.format(url).encode('utf-8')
     }
 
 
