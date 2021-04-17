@@ -98,7 +98,7 @@ def get_movie_sources(link):
     url = link + 'download/'
     html = requests.get(url)
     if (html.status_code != 200):
-        print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code)))
+        print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code))
     soup = BeautifulSoup(html.text, 'lxml')
 
     a_tags = soup.find_all('a', {'class': MOVIE_DOWNLOAD_ITEMS_CLASS})
@@ -113,7 +113,7 @@ def scrape_movie(url):
     data = {}
     html = requests.get(url)
     if (html.status_code != 200):
-        print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code)))
+        print('[ArabseedScraper]: Request for <{}> returned <{}>'.format(url, html.status_code))
     soup = BeautifulSoup(html.text, 'lxml')
     
     tax = get_movie_taxs(soup)
