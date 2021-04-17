@@ -29,15 +29,9 @@ MOVIE_TAX_CLASS = 'MetaTermsInfo'
 
 MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 
-Refresh_Agent = False
-AGENT = get_user_agent()
-print('[ArabseedScraper]: Scraping using user_agent <{}>'.format(AGENT))
-
 def get_headers(url): 
-    if(Refresh_Agent):
-        AGENT = get_user_agent()
-        Refresh_Agent = False
-        print('[ArabseedScraper]: Refreshing user_agent to <{}>'.format(AGENT))
+    AGENT = get_user_agent()
+    print('[ArabseedScraper]: Scraping using user_agent <{}>'.format(AGENT))
     
     return {
         'User-Agent': AGENT,
@@ -165,8 +159,6 @@ def collect(start = 1, end = 2, category = FORIGN_MOVIES_CATEGORY):
     #parts = partition(movies_data)
     parts = [movies_data]
     start_threads_job(parts, scrape_thread_callback, global_movies)
-
-    Refresh_Agent = True
     
     return global_movies
 
