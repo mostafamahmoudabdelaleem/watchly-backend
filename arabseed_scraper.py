@@ -31,7 +31,7 @@ MOVIE_DOWNLOAD_ITEMS_CLASS = 'ArabSeedServer'
 
 def get_headers(url): 
     AGENT = get_user_agent()
-    print('[ArabseedScraper]: Scraping using user_agent <{}>'.format(AGENT))
+    #print('[ArabseedScraper]: Scraping using user_agent <{}>'.format(AGENT))
     
     return {
         'User-Agent': AGENT,

@@ -15,7 +15,8 @@ def cron_job():
 
     j = json.dumps(movies, separators=(',', ':'), ensure_ascii=False)
     resp = requests.post(
-        'https://api.watchly.msoft.ml/api/ramdan', 
+        'https://api.watchly.msoft.ml/api/ramadan',
+        #'http://localhost:5000/api/ramdan',
         data=j.encode('utf-8'), 
         headers={
             'Content-Type': 'application/json; charset=utf-8'
@@ -25,7 +26,8 @@ def cron_job():
 
 
 if __name__ == "__main__":
-    while True:
+    '''while True:
         cron_job()
-        print('[ArabseedScraper]: Sleeping for 2 hour')
-        time.sleep(2 * 60 * 60)
+        print('[ArabseedScraper]: Sleeping for 1 hour')
+        time.sleep(1 * 60 * 60)'''
+    cron_job()
